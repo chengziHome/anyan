@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WS-test</title>
+</head>
+<body>
+<input id="content" type="text" value="" >
+<button id="ws">send</button>
+
+<script src="/lib/js/jquery.min.js"></script>
+<script type="text/javascript">
+    $("#content").attr("disabled", false);
+    socket = new WebSocket('ws://localhost:8082/')
+    socket.onopen = function (ev) { 
+        console.log("connected...");
+    }
+    socket.message = function (ev) {
+        console.log("ev.data:"+ev.data);
+    }
+    socket.onclose = function(ev){
+        console.log("connected close");
+    }
+    console.log('send');
+    $('#ws').click(function () {
+        socket.send($('#content').val());
+    });
+</script>
+</body>
+</html>

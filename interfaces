@@ -1,0 +1,111 @@
+借口规范-1.0
+
+
+[home端-视频流]
+1，/login      HTTP(POST)
+param:{username:'kaola123',type:'HOME',vidoesList:[{id:1,name='院士楼1号门'}，{id:2,name='教学楼3号门'}]}
+return:{ret_code:0,err_msg:'something wrong'}
+
+ret_code:
+0：success
+-1:用户不存在
+-2：系统错误，请重试
+
+2,ws_ctrl      WS[Server-> Home]
+data:{
+    video_id:2,
+    uuid;"0ddaa0f0-0c7c-11e8-82f7-79078850bd8a",
+    width:320,
+    height:180,
+}
+
+
+
+
+
+3,ws_video     WS
+    1),递交头
+    data:{"username":"kaola","type":"HOME","uuid":"0ddaa0f0-0c7c-11e8-82f7-79078850bd8a"}
+    2),Server 应答
+    data:{"ret_code":0,"err_msg":"something wrong"}
+    3),transmit the ts Stream
+
+
+
+
+
+
+
+
+[phone端]
+1，/login       HTTP(POST)
+param:{username:'kaola123',password:'kl123123',type='PHONE'}
+return:{videos:[],alarms:[],video_id:-1,username:'kaola',uuid:-1}
+
+ret_code:(error.ejs)
+ 0:success
+-1:密码错误
+-2:home端当前未链接
+-3:服务器错误
+
+
+
+(麻蛋，忽然发现这里有一个拦截器的功能还得实现)
+
+2，/play      HTTP(POST)(异步刷新)
+param:{username:'kaola',video_id:12,width:320,height180}
+return:{ret_code:0,err_msg:'',uuid:'',username:''}
+
+
+3,phone_ws
+pararm:{"uuid","","type":"PHONT"}
+return:{ret_code,err_msg}
+
+
+
+
+
+
+
+
+
+
+
+[home端-报警信息]    TCP
+最后再写
+
+
+
+
+
+
+[定义服务器端口]
+80:WEB HTTP 请求
+
+8081: ws ctrl
+8082: ws video stream
+
+8084:TCP alarm
+8085:ws alarm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
