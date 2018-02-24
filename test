@@ -1,0 +1,18 @@
+<Notify><Username>kaola</Username></Notify>
+
+<Notify Type="Alarming">
+	<Alarming channelID="4" opt="subscribe" stamp="2018-02-09 12:12:13" type="0">
+		<Picture length="35780"/>
+	</Alarming>
+</Notify>
+
+
+<Notify Type="DetectBoxes">
+	<DetectBoxes>
+		<Box bottom="944" category="0" left="255" right="382" top="399"/>
+		<Box bottom="1079" category="0" left="1756" right="1919" top="241"/>
+	</DetectBoxes>
+</Notify>
+
+
+

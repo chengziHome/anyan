@@ -1,22 +1,16 @@
-var request = require('request');
+var Slice = require('../utils/tcp/slice');
+const CONST = require('../utils/const');
 
-// request.post({url:'http://localhost:80/login/',
-//         form:{username:'kaola',password:'kl123456',type:'HOME',videosList:'[{"id":1,"name":"教学楼1号"},{"id":2,"name":"评学楼3号"}]'}},
-//     function (err,response,body) {
-//         console.log('body:'+body);
-//     });
+slice = new Slice();
 
+var str = new Buffer('chengzi');
+console.log(str);
 
-
-// const uuid = require('node-uuid');
-// var u = uuid.v1();
-//
-// console.log(JSON.stringify({uuid:u}));
+var version = 0x01;
 
 
 
 
-tcp_str = ''
 
 
 

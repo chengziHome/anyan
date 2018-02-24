@@ -228,7 +228,7 @@ function initVideoStreamWS(){
 
 
 /**
- * model
+ * utils
  */
 /* A home Class */
 function Home(){
@@ -255,8 +255,6 @@ function VideoStream(){
     this.uuid = '';
     this.width = 0;
     this.height = 0;
-
-
 
 }
 function createVideoStream(){
@@ -335,28 +333,6 @@ function removePair(pair){
 }
 
 
-// function getHomeCtrl(ws){
-//     for(var i=0;i<HOME_CTRL_LIST.length;i++){
-//         if(HOME_CTRL_LIST[i]==ws)
-//             return true;
-//     }
-//     return false;
-// }
-// function getHomeCtrlByUsername(username){
-//     for(var i=0;i<HOME_CTRL_LIST.length;i++){
-//         if(HOME_CTRL_LIST[i].username==username)
-//             return HOME_CTRL_LIST[i];
-//     }
-//     return null;
-// }
-
-
-
-
-
-
-
-
 function Home(){
     this.username = '';
     this.videosList = [];//a video item is a json string.ie:{id:12,name:'院士楼1'}
@@ -389,6 +365,8 @@ function Home(){
 function printHome(home){
     console.log('home[username:'+home.username+',video_ctrl_ws:'+home.video_ctrl_ws +']\n')
 }
+
+
 
 
 

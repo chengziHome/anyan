@@ -72,7 +72,10 @@ return:{ret_code,err_msg}
 
 
 [home端-报警信息]    TCP
-最后再写
+
+
+
+
 
 
 
@@ -93,7 +96,7 @@ return:{ret_code,err_msg}
 
 
 
-
+共享资源的互斥问题也没有解决
 
 
 
