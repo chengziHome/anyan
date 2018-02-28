@@ -108,23 +108,23 @@
         var player = new JSMpeg.Player(url, {canvas: canvas});
         current_player = player;
 
-        // var ws_socket = null;
-        // var socket = null;
-        // while((ws_socket=player.getWSSocket())==null);
-        // while((socket=ws_socket.getSocket())==null);
+        var ws_socket = null;
+        var socket = null;
+        while((ws_socket=player.getWSSocket())==null);
+        while((socket=ws_socket.getSocket())==null);
 
-
+        //
         // socket.send('msg');
         //
         // socket.onopen = function(ev){
-            // console.log('open socket');
-            // socket.send(JSON.stringify({
-            //     type:"PHONE",uuid:uuid
-            // }))
-            // console.log("phone send success!");
-            // // socket.onmessage = function (data) {
-            // //     console.log('count:'+stream_count++);
-            // // }
+        //     console.log('open socket');
+        //     socket.send(JSON.stringify({
+        //         type:"PHONE",uuid:uuid
+        //     }))
+        //     console.log("phone send success!");
+        //     // socket.onmessage = function (data) {
+        //     //     console.log('count:'+stream_count++);
+        //     // }
         // }
     }
 
@@ -236,17 +236,21 @@
         // WebSocket message handler
         ws.onmessage = function (e) {
             var alarmData = JSON.parse(e.data);
-            var new_li = '<li>\n' +
-                '                            <div class="alarm-img ">\n' +
-                '                                <img class="img img-min" src="'+ alarmData['img'] +'"/>\n' +
-                '\n' +
-                '\n' +
-                '                            </div>\n' +
-                '                            <div class="message">\n' +
-                '                                <div class="time">'+ alarmData['time'] +'</div>\n' +
-                '                                <div class="type">'+ alarmData['type'] +'</div>\n' +
-                '                                <div class="equipment">'+ alarmData['ip'] +'</div>\n' +
-                '                            </div>\n' +
+            // var new_li = '<li>\n' +
+            //     '                            <div class="alarm-img ">\n' +
+            //     '                                <img class="img img-min" src="'+ alarmData['img'] +'"/>\n' +
+            //     '\n' +
+            //     '\n' +
+            //     '                            </div>\n' +
+            //     '                            <div class="message">\n' +
+            //     '                                <div class="time">'+ alarmData['time'] +'</div>\n' +
+            //     '                                <div class="type">'+ alarmData['type'] +'</div>\n' +
+            //     '                                <div class="equipment">'+ alarmData['ip'] +'</div>\n' +
+            //     '                            </div>\n' +
+            //     '                        </li>';
+
+            //test
+            var new_li = '<li>' + alarmData +
                 '                        </li>';
 
             $('.alarm-list').prepend(new_li)

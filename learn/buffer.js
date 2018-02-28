@@ -122,3 +122,23 @@ console.log(bb2.toString());
 
 
 
+//一些测试
+console.log('------------------------');
+var bb5 = Buffer.from('test');
+
+var bb6 = Buffer.from('chengzi');
+console.log(bb5);
+console.log(Buffer.concat([bb5,bb6]));
+
+
+console.log('-------------------------------');
+var header_buf = Buffer.alloc(26);
+header_buf.writeUInt16BE(1);
+header_buf.writeUInt32BE(1,2);
+header_buf.writeUInt32BE(1,6);
+header_buf.writeUInt32BE(0,10);
+header_buf.writeUInt32BE(82,14);
+header_buf.writeUInt32BE(82,18);
+header_buf.writeUInt32BE(82,22);
+console.log(header_buf);
+

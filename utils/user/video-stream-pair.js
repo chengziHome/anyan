@@ -1,10 +1,5 @@
 
 
-
-
-
-
-
 class VideoStreamPair{
 
     constructor(){
@@ -18,7 +13,7 @@ class VideoStreamPair{
     }
 }
 
-
+module.exports = VideoStreamPair;
 
 
 

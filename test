@@ -2,7 +2,9 @@
 
 <Notify Type="Alarming">
 	<Alarming channelID="4" opt="subscribe" stamp="2018-02-09 12:12:13" type="0">
-		<Picture length="35780"/>
+		<Picture length="391288"/>
+		<Picture length="616552"/>
+		<Picture length="388320"/>
 	</Alarming>
 </Notify>
 

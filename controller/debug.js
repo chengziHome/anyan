@@ -1,12 +1,67 @@
 const CONST = require('../utils/const');
-
+var util = require('util');
+var fs = require('fs');
 
 
 class Debug{
 
+    img(req,res,next){
+        if(req.method=="GET"){
+            console.log("Accept get ...");
+            res.render('img',{
+                img:null
+            });
+        }else if(req.method=="POST"){
+            console.log("Accept post ...");
+
+            fs.readFile('/home/chengzi/Pictures/x5.jpg','utf-8',function(err,data){
+                console.log("img:"+data.length);
+                res.render('img',{
+                    img:data
+                })
+            })
+        }else{
+            console.log("else");
+        }
+
+    }
+
+    ws(req,res,next){
+        res.render('ws')
+    }
+
+
+
+
+    printHome(req,res,next){
+        console.log(CONST.REGISTER.HOME_MAP);
+        res.send("print OK");
+    }
+
+    printTcpHome(req,res,next){
+        console.log(CONST.REGISTER.HOME_TCP_MAP);
+        res.send("print OK");
+    }
+
+    printSocketSize(req,res,next){
+        const SOCKET_LIST = CONST.REGISTER.SOCKET_LIST;
+        console.log(SOCKET_LIST.length);
+        console.log(SOCKET_LIST[0] == SOCKET_LIST[1]);
+        res.send("print OK");
+    }
+
+    printSliceLength(req,res,next){
+        const SLICES = CONST.REGISTER.HOME_MAP.get("kaola").mPackSlices;
+        console.log("slice len:"+SLICES.length);
+        res.send("print OK");
+    }
+
+
+
     print(req,res,next){
         res.send(getHomeList());
     }
+
 }
 
 
@@ -28,6 +83,7 @@ function getHome(home){
 }
 
 
+module.exports = Debug;
 
 
 

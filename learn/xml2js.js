@@ -6,16 +6,19 @@ var xml = "<root>Hello Chengzi!!!</root>";
  * xml -> json
  */
 
-xml = '<Notify Type="DetectBoxes">\n' +
-    '\t<DetectBoxes>\n' +
-    '\t\t<Box bottom="944" category="0" left="255" right="382" top="399"/>\n' +
-    '\t\t<Box bottom="1079" category="0" left="1756" right="1919" top="241"/>\n' +
-    '\t</DetectBoxes>\n' +
+xml = '<Notify Type="Alarming">\n' +
+    '\t<Alarming channelID="4" opt="subscribe" stamp="2018-02-09 12:12:13" type="0">\n' +
+    '\t\t<Picture length="35780"/>\n' +
+    '\t\t<Picture length="35230"/>\n' +
+    '\t\t<Picture length="1220"/>\n' +
+    '\t\t<Picture length="3380"/>\n' +
+    '\t</Alarming>\n' +
     '</Notify>';
 
 var xmlParser = new xml2js.Parser();
 xmlParser.parseString(xml, function (err, result) {
-    console.log(typeof util.inspect(result, false, null));
+    console.log(Object.prototype.toString.call(result));
+    console.log(util.inspect(result, false, null));
 })
 
 

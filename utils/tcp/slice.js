@@ -13,23 +13,23 @@ class Slice {
         this.mLength;                   // UInt32, primitive data length(including many slices,but no headers)
         this.mMsgLength;                // UInt32, message length without picture length
 
-        this.mData;                     // String, even it includes picture
+        this.mData;                     // Buffer, even it includes picture
         this.buffer = null;
     }
 
-    //用于接受slice
-    init(buf){
+    //用于接受slice,tcp收到的是一个Buffer类型
+    init(head_buf){
         try{
-            this.buffer = buf;
-            this.mVer = buf.readUInt16BE();
-            this.mSn = buf.readUInt32BE(2);
-            this.mSliceCount = buf.readUInt32BE(6);
-            this.mSliceSn = buf.readUInt32BE(10);
-            this.mSliceLength = buf.readUInt32BE(14);
-            this.mLength = buf.readUInt32BE(18);
-            this.mMsgLength = buf.readUInt32BE(22);
+            // this.buffer = buf;
+            this.mVer = head_buf.readUInt16BE();
+            this.mSn = head_buf.readUInt32BE(2);
+            this.mSliceCount = head_buf.readUInt32BE(6);
+            this.mSliceSn = head_buf.readUInt32BE(10);
+            this.mSliceLength = head_buf.readUInt32BE(14);
+            this.mLength = head_buf.readUInt32BE(18);
+            this.mMsgLength = head_buf.readUInt32BE(22);
 
-            this.mData = buf.slice(26).toString();
+            // this.mData = buf.slice(26);
 
         }catch(err){
             console.log("Slice 构造出错"+err.message);
@@ -42,17 +42,16 @@ class Slice {
     getBuffer(){
         // that's,this.buffer will be initialized only once
         if(this.buffer==null){
-            var buf = Buffer.alloc(this.mSliceLength+CONST.TCP.HEADER_LENGTH);
-            buf.writeUInt16BE(this.mVer);
-            buf.writeUInt32BE(this.mSn,2);
-            buf.writeUInt32BE(this.mSliceCount,6);
-            buf.writeUInt32BE(this.mSliceSn,10);
-            buf.writeUInt32BE(this.mSliceLength,14);
-            buf.writeUInt32BE(this.mLength,18);
-            buf.writeUInt32BE(this.mMsgLength,22);
-            buf.write(this.mData,26);
+            var header_buf = Buffer.alloc(CONST.TCP.HEADER_LENGTH);
+            header_buf.writeUInt16BE(this.mVer);
+            header_buf.writeUInt32BE(this.mSn,2);
+            header_buf.writeUInt32BE(this.mSliceCount,6);
+            header_buf.writeUInt32BE(this.mSliceSn,10);
+            header_buf.writeUInt32BE(this.mSliceLength,14);
+            header_buf.writeUInt32BE(this.mLength,18);
+            header_buf.writeUInt32BE(this.mMsgLength,22);
 
-            this.buffer = buf;
+            this.buffer = Buffer.concat([header_buf,this.mData]);
         }
         return this.buffer;
 

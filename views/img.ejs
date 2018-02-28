@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+<body>
+<h1>Img</h1>
+
+<form action="/debug/img" method="post">
+    <input type="submit">
+</form>
+
+<% if(img != null && img != ''){ %>
+<div style="border: 1px solid red;">
+    <h3><%=img.length%></h3>
+    <img src="data:image/jpeg;base64,<%=img%>"/>
+</div>
+<% } %>
+
+<script>
+
+</script>
+
+</body>
+</html>

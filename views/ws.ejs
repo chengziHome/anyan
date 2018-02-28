@@ -8,6 +8,9 @@
 <body>
 <input id="content" type="text" value="" >
 <button id="ws">send</button>
+<div id="imgDiv" style="border: 1px solid red;">
+
+</div>
 
 <script src="/lib/js/jquery.min.js"></script>
 <script type="text/javascript">
@@ -16,13 +19,26 @@
     socket.onopen = function (ev) { 
         console.log("connected...");
     }
-    socket.message = function (ev) {
-        console.log("ev.data:"+ev.data);
+    socket.onmessage = function (evt) {
+        console.log("type:"+typeof(evt.data));
+        if(typeof(evt.data)=="string"){
+            console.log("str:"+evt.data);
+        }else{
+            var reader = new FileReader();
+            reader.onload = function(evt){
+                if(evt.target.readyState == FileReader.DONE){
+                    var url = evt.target.result;
+                    console.log(url);
+                    var img = document.getElementById("imgDiv");
+                    img.innerHTML = "<img src = "+url+" />";
+                }
+            }
+            reader.readAsDataURL(evt.data);
+        }
     }
     socket.onclose = function(ev){
         console.log("connected close");
     }
-    console.log('send');
     $('#ws').click(function () {
         socket.send($('#content').val());
     });

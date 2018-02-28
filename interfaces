@@ -72,8 +72,32 @@ return:{ret_code,err_msg}
 
 
 [home端-报警信息]    TCP
+1,home -> server
+<Notify Type="Login">
+    <Username>kaola</Username>
+</Notify>
+2,server -> home
+<Notify Type="LoginResponse">
+    <Code>0</Code>
+    <Message>error message or success message</Message>
+</Notify>
+知道收到code=0，才停止请求。反复请求的过程可以使用用一个tcp链接。
 
-
+3，订阅。server -> home
+<Subscribe Type="Alarming">
+    <ChannelId>*</ChannelId>
+</Subscribe>
+4,推送报警信息。home -> server
+<Notify Type="Alarming">
+    <Alarming type=3 channelID=2 stamp="2018/2/24 14:23:23" opt="subscribe" ></Alarming>
+    <Picture length=23415 />
+    <Picture length=346144 />
+     ...
+</Notify>
+5,取消订阅。server -> home
+<Subscribe Type="CancelAlarming">
+    <ChannelId>*</ChannelId>
+</Subscribe>
 
 
 

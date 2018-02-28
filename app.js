@@ -6,10 +6,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 
-var index = require('./routes/index');
+// var index = require('./routes/index-bak');
 var users = require('./routes/users');
-
-
+var debug = require('./routes/debug');
+var alarm = require('./routes/alarm');
 
 
 var app = express();
@@ -30,8 +30,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.use('/', index);
+// app.use('/', index);
 app.use('/users', users);
+app.use('/debug',debug);
+app.use('/alarm',alarm);
 
 
 
@@ -48,6 +50,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  console.log(err);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
