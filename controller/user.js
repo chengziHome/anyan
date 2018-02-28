@@ -3,13 +3,7 @@ var request = require('request');
 var util = require('util');
 var Home = require('../utils/user/home');
 
-const HOME_MAP = CONST.REGISTER.HOME_MAP;
-const HOME_TCP_MAP = CONST.REGISTER.HOME_TCP_MAP;
-const VIDEO_PAIR_MAP = CONST.REGISTER.VIDEO_PAIR_MAP;
-const VIDEO_HOME_MAP =CONST.REGISTER.VIDEO_HOME_MAP;
-const VIDEO_PHONE_MAP = CONST.REGISTER.VIDEO_PHONE_MAP;
-
-
+const HOME = CONST.HOME
 
 
 
@@ -40,26 +34,13 @@ class User{
                 if(body=='success'){
                     // 初始化home对象
                     if(type==CONST.LOGIN.HOME){
+                        HOME.username = username;
+                        HOME.videosList = videosList;
 
-                        var home = null;
-                        if((home=(HOME_MAP.get(username)))==null){
-                            console.log("login first time");
-                            var home = new Home();
-                            home.username = username;
-                            home.videosList = videosList;
-                            HOME_MAP.set(username,home);
-                        }
-                        home.videosList = videosList;
-                        //遍历Map
                         res.send('{"ret_code":0,"err_msg":""}')
                     }else{
-                        var home = null;
-                        if((home=HOME_MAP.get(username))==null){
-                            res.render('error',{message:'Your Home Server has not connected'})
-                        }else{
-                            res.render('video',{videos:JSON.parse(home.videosList),alarms:(home.alarmsList||[]),
-                                video_id:'-1',username:username,uuid:-1})
-                        }
+                        res.render('video',{videos:HOME.videosList,alarms:HOME.alarmsList,
+                            video_id:'-1',username:username,uuid:-1})
                     }
                 }else{
                     if(type==CONST.LOGIN.HOME){

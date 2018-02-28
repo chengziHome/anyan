@@ -25,30 +25,6 @@ class HomeAlarm {
     }
 
 
-    login(req,res,next) {
-        var login_xml = '<Notify Type="Login"><Username>kaola</Username></Notify>';
-        var slice = new Slice();
-        slice.setmVer(0x01);
-        slice.setmSn(0x0001);
-        slice.setmSliceCount(0x0001);
-        slice.setmSliceSn(0x0000);
-        var msg = Buffer.from(login_xml);
-        slice.setmSliceLength(msg.length);
-        slice.setmLength(msg.length);
-        slice.setmMsgLength(msg.length);
-        slice.setmData(Buffer.from(login_xml));
-
-        var buf = slice.getBuffer();
-
-        console.log("login buf:");
-        console.log(buf);
-        client.write(buf);
-
-        res.send("TCP login OK");
-
-    }
-
-
     alarm(req,res,next) {
 
         var pic_num = 7;
@@ -58,9 +34,8 @@ class HomeAlarm {
 
         for (var i = 1; i <= pic_num; i++) {
 
-            var data = fs.readFileSync(path.join(__dirname, '../public/wechat/img/x' + i + '.jpg'));
+            var data = fs.readFileSync(path.join(__dirname, '../public/wechat/img/x' + (i+1) + '.jpg'));
             imgs[i] = data;
-            console.log("before send,picture.len:"+data.length);
             // console.log("type:"+Object.prototype.toString.call(imgs[i]));
             alarm_xml_pic += '<Picture length="' + data.length + '" ></Picture>'
         }
@@ -71,9 +46,10 @@ class HomeAlarm {
 
         var alarm_xml_buf = Buffer.from(alarm_xml);
         imgs[0] = alarm_xml_buf;
-
-
         var alarm = Buffer.concat(imgs);
+
+
+
 
         var sn = 1;
         var length = alarm.length;

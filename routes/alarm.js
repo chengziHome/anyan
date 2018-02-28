@@ -10,9 +10,7 @@ var homeUser = new HomeUser()
 
 router.get('/initServer',alarm.init);
 router.get('/initClient',homeAlarm.init);
-router.get('/homeLogin',homeAlarm.login);
 router.get('/homeAlarm',homeAlarm.alarm);
-router.get('/homeUserLogin',homeUser.login);
 
 module.exports = router;
 

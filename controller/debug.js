@@ -31,36 +31,13 @@ class Debug{
     }
 
 
-
-
     printHome(req,res,next){
-        console.log(CONST.REGISTER.HOME_MAP);
-        res.send("print OK");
-    }
-
-    printTcpHome(req,res,next){
-        console.log(CONST.REGISTER.HOME_TCP_MAP);
-        res.send("print OK");
-    }
-
-    printSocketSize(req,res,next){
-        const SOCKET_LIST = CONST.REGISTER.SOCKET_LIST;
-        console.log(SOCKET_LIST.length);
-        console.log(SOCKET_LIST[0] == SOCKET_LIST[1]);
-        res.send("print OK");
-    }
-
-    printSliceLength(req,res,next){
-        const SLICES = CONST.REGISTER.HOME_MAP.get("kaola").mPackSlices;
-        console.log("slice len:"+SLICES.length);
+        console.log(CONST.HOME.toString());
         res.send("print OK");
     }
 
 
 
-    print(req,res,next){
-        res.send(getHomeList());
-    }
 
 }
 

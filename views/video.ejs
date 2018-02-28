@@ -83,7 +83,7 @@
 <script src="/javascripts/jquery.min.js"></script>
 <!--<script src="{% static 'lib/js/bootstrap.min.js'  %}"></script>-->
 <script type="text/javascript" src="/lib/layui/layui.all.js" ></script>
-<script type="text/javascript" src="/javascripts/jsmpeg.min.js"></script>
+<script type="text/javascript" src="/javascripts/jsmpeg-1.1.min.js"></script>
 <script type="text/javascript">
 
 
@@ -97,14 +97,13 @@
     canvas.width = width;
     canvas.height = width / 1.78;
 
-    // if(current_id!='-1'){
+    if(current_id!='-1'){
         createPlayer(current_id,uuid,username);
-    // }
-    var stream_count = 0;
+    }
 
 
     function createPlayer(video_id,uuid,username){
-        var url = 'ws://192.168.2.100:8112/';
+        var url = 'ws://'+document.location.hostname+'8082';
         var player = new JSMpeg.Player(url, {canvas: canvas});
         current_player = player;
 
@@ -113,19 +112,11 @@
         while((ws_socket=player.getWSSocket())==null);
         while((socket=ws_socket.getSocket())==null);
 
-        //
-        // socket.send('msg');
-        //
-        // socket.onopen = function(ev){
-        //     console.log('open socket');
-        //     socket.send(JSON.stringify({
-        //         type:"PHONE",uuid:uuid
-        //     }))
-        //     console.log("phone send success!");
-        //     // socket.onmessage = function (data) {
-        //     //     console.log('count:'+stream_count++);
-        //     // }
-        // }
+
+        socket.send(JSON.stringify({
+            type:"PHONE",uuid:uuid
+        }))
+
     }
 
     //切换视频的逻辑
@@ -204,9 +195,7 @@
         exports('index', {}); //注意，这里是模块输出的核心，模块名必须和use时的模块名一致
     });
 
-    console.log('pre');
     $('.img').click(function () {
-        console.log('ok!')
         var img = new Image();
         var src = $(this).attr('src');
         console.log(src);
@@ -229,52 +218,113 @@
 
 
 
-    var ws = new WebSocket('ws://' + document.location.hostname + ':8082');
+    var ws = new WebSocket('ws://' + document.location.hostname + ':8085');
     var alarms = {ip:'0', type:'0', time:'0', img:'0'};
     function updataUI() {
 
         // WebSocket message handler
         ws.onmessage = function (e) {
             var alarmData = JSON.parse(e.data);
-            // var new_li = '<li>\n' +
-            //     '                            <div class="alarm-img ">\n' +
-            //     '                                <img class="img img-min" src="'+ alarmData['img'] +'"/>\n' +
-            //     '\n' +
-            //     '\n' +
-            //     '                            </div>\n' +
-            //     '                            <div class="message">\n' +
-            //     '                                <div class="time">'+ alarmData['time'] +'</div>\n' +
-            //     '                                <div class="type">'+ alarmData['type'] +'</div>\n' +
-            //     '                                <div class="equipment">'+ alarmData['ip'] +'</div>\n' +
-            //     '                            </div>\n' +
-            //     '                        </li>';
-
-            //test
-            var new_li = '<li>' + alarmData +
+            console.log("data:"+e.data);
+            var new_li = '<li>\n' +
+                '                            <div class="alarm-img ">\n' +
+                '                                <img class="img img-min" src="'+ alarmData['imgs'][0] +'"/>\n' +
+                '\n' +
+                '\n' +
+                '                            </div>\n' +
+                '                            <div class="message">\n' +
+                '                                <div class="time">'+ alarmData['time'] +'</div>\n' +
+                '                                <div class="type">'+ alarmData['type'] +'</div>\n' +
+                '                                <div class="equipment">'+ alarmData['channel'] +'</div>\n' +
+                '                            </div>\n' +
                 '                        </li>';
 
             $('.alarm-list').prepend(new_li)
 
+            //先构造内部轮播div
+            var imgs = '';
+            for(let i=0;i<alarmData['imgs'].length;i++){
+                imgs += ' <div><img class="img img-min" src="'+ alarmData['imgs'][i] +'"></div>';
+            }
+            var carousel ='<div class="layui-carousel">' +
+                '    <div carousel-item="">' +
+                        imgs +
+                '    </div>' +
+                '           </div>';
+
             // 每次更新要绑定一次事件
 
+
             $('.img').eq(0).click(function () {
-                var img = new Image();
-                var src = $(this).attr('src');
-                var imgHtml = '<img style="width:320px;height: 180px;" src=" ' + src + ' "   />';
+
+                var imgHtml = carousel;
                 layer.open({
                     type: 1,
                     shade: false,
                     title: false, //不显示标题
                     area: ['320px', '180px'],
-                    // area: [img.width + 'px', img.height+'px'],
                     content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
                     cancel: function (index, layero) {
                         layer.close(index)
                         return true;
                     },
-
-
                 });
+
+
+                //打开之后绑定轮播图
+                layui.use(['carousel', 'form'], function(){
+                    var carousel = layui.carousel
+                        ,form = layui.form;
+
+
+                    //图片轮播
+                    carousel.render({
+                        elem: '.layui-carousel'
+                        ,width: '320px'
+                        ,height: '180px'
+                        ,interval: 10000
+                    });
+
+                    //事件
+                    carousel.on('change(test4)', function(res){
+                        console.log(res)
+                    });
+
+                    var $ = layui.$, active = {
+                        set: function(othis){
+                            var THIS = 'layui-bg-normal'
+                                ,key = othis.data('key')
+                                ,options = {};
+
+                            othis.css('background-color', '#5FB878').siblings().removeAttr('style');
+                            options[key] = othis.data('value');
+                            ins3.reload(options);
+                        }
+                    };
+
+                    //监听开关
+                    form.on('switch(autoplay)', function(){
+                        ins3.reload({
+                            autoplay: this.checked
+                        });
+                    });
+
+                    $('.demoSet').on('keyup', function(){
+                        var value = this.value
+                            ,options = {};
+                        if(!/^\d+$/.test(value)) return;
+
+                        options[this.name] = value;
+                        ins3.reload(options);
+                    });
+
+                    //其它示例
+                    $('.demoTest .layui-btn').on('click', function(){
+                        var othis = $(this), type = othis.data('type');
+                        active[type] ? active[type].call(this, othis) : '';
+                    });
+                });
+
             });
 
         };

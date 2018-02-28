@@ -7,7 +7,8 @@ console.log(a.push("chegnzi"));
 
 
 b = ["ch","b","bs"];
-console.log(b.join(""));
+b.splice(1,1);
+console.log(b)
 
 
 

@@ -1,14 +1,15 @@
-const CONST = require("../const");
 var Alarm = require("../tcp/alarm");
 var Message = require("../tcp/Message");
 var fs = require("fs");
 var path = require("path");
 
+const ALARM_TYPE=["闯入报警","陌生人报警","攀爬报警","遮挡报警"];
+
 class Home{
 
     constructor(){
         this.username = '';
-        this.videosList = [];//a video item is a json string.ie:{id:12,name:'院士楼1'}
+        this.videosList = ["服务器通道１","服务器通道2","服务器通道3","服务器通道4","服务器通道5","服务器通道6"];//a video item is a json string.ie:{id:12,name:'院士楼1'}
         this.alarmsList = [];//how to process picture(jpg)
         this.video_ctrl_ws = null;//Video Ctrl ws reference,that's a WebSocket object reference.
         this.video_stream_ws = [];// Deprecated.See VideoStreamPair.
@@ -16,9 +17,8 @@ class Home{
         this.alarm_phone_ws = [];
 
         //alarm message
-        this.alarm_map = new Map();//key:alarm id,value:alarm object
 
-        this.mPackState = CONST.TCP.REC_HEADER;
+        this.mPackState = 1;
         this.mRecvBuffer = null;
         this.mPackSlices = [];
 
@@ -27,10 +27,17 @@ class Home{
     }
 
     toString(){
+
+
         return JSON.stringify({
             username:this.username,
-            videos:this.videoList.length
+            videos:this.videosList.length,
+            alarm_home_tcp_null:this.alarm_home_tcp==null,
+            alarm_phone_ws:this.alarm_phone_ws.length
         })
+
+
+
     }
 
     /**
@@ -57,9 +64,11 @@ class Home{
 
 
         var pictures_data = msg.getPictures();
+        console.log("pic_data_0_size:"+pictures_data[0].length);
+
 
         for (let k = 0; k < pictures.length; k++) {
-            var img_url = '/tmp/' + this.username + '/' + msg.mSn + '-' + k + '.jpg';
+            var img_url = '/tmp/' + msg.mSn + '-' + k + '.jpg';
             fs.writeFileSync(path.join(__dirname,'../../public' + img_url), pictures_data[k], function (err) {
                 if (err) {
                     console.log(err.message);
@@ -68,10 +77,23 @@ class Home{
             })
             imgs.push(img_url);
         }
-        msg_xml.imgs = imgs;
+        msg_xml.Notify.Alarming[0].imgs = imgs;
         console.log("msg_xml");
         console.log(msg_xml);
-        //TODO:暂时没有实际转发,而是打印出来,看解析是否成功.
+
+
+        //构造转发对象
+        var alarm = {};
+        alarm.time = msg_xml.Notify.Alarming[0].$.stamp;
+        alarm.type = ALARM_TYPE[parseInt(msg_xml.Notify.Alarming[0].$.type)];
+        alarm.channel = this.videosList[parseInt(msg_xml.Notify.Alarming[0].$.channelID)];
+        alarm.imgs = msg_xml.Notify.Alarming[0].imgs;
+        console.log(alarm);
+
+
+        for(let i=0;i<this.alarm_phone_ws.length;i++){
+            this.alarm_phone_ws[i].send(JSON.stringify(alarm));
+        }
 
 
         return;

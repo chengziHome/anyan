@@ -1,4 +1,4 @@
-
+var Home = require('./user/home');
 
 // tcp protocol
 
@@ -8,21 +8,9 @@ const TCP = {
     NOTIFY_LOGIN:"Login",
     NOTIFY_ALARM:"Alarming",
     ALARM_TYPE:["闯入报警","陌生人报警","攀爬报警","遮挡报警"],
-    LOGIN_SUCCESS:"<Notify Type=\"LoginResponse\">\n" +
-    "                   <Code>0</Code>\n" +
-    "                   <Message>Register Successfully!</Message>\n" +
-    "               </Notify>",
-    LOGIN_FAILED:"<Notify Type=\"LoginResponse\">\n" +
-    "                   <Code>-1</Code>\n" +
-    "                   <Message>Your home has not logined yet.</Message>\n" +
-    "             </Notify>",
-
 
     REC_HEADER:1,
     REC_DATA:2,
-
-
-
 
 }
 
@@ -53,24 +41,15 @@ const LOGIN = {
  *
  */
 
-const REGISTER = {
-    HOME_MAP:new Map(),
-    HOME_TCP_MAP:new Map(),
 
-    VIDEO_PAIR_MAP:new Map(),
-    VIDEO_HOME_MAP:new Map(),
-    VIDEO_PHONE_MAP:new Map(),
-
-    //debug
-    SOCKET_LIST: []
-}
+const HOME = new Home();
 
 
 
 exports.TCP = TCP;
 exports.PORT = PORT;
 exports.LOGIN = LOGIN;
-exports.REGISTER = REGISTER;
+exports.HOME = HOME;
 
 
 

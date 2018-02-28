@@ -1,6 +1,3 @@
-const HOME_LIST = require('../const').REGISTER.HOME_LIST;
-const VIDEO_STREAM_LIST = require('../const').REGISTER.VIDEO_STREAM_LIST;
-
 
 function getHomeByUsername(username) {
     for (var i = 0; i < HOME_LIST.length; i++) {

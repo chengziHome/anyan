@@ -30,9 +30,10 @@ class Slice {
             this.mMsgLength = head_buf.readUInt32BE(22);
 
             // this.mData = buf.slice(26);
-
+            return true;
         }catch(err){
-            console.log("Slice 构造出错"+err.message);
+            console.log("Slice 构造出错"+err);
+            return false;
         }
 
     }

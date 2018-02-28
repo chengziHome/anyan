@@ -89,27 +89,22 @@ class Message{
                 this.pictures_size.push(parseInt(pictures[j].$.length));
             }
 
-            console.log(this.pictures_size);
 
             //开始解析图片
 
             var pictures_buf = msg_buf.slice(mMsglength);
-            console.log("message.js,picture_buf");
-            console.log(pictures_buf);
             var picture_start = 0;
             var picture_end = 0;
 
-
+            console.log("msg_buf:"+msg_buf.length+"pic_buf_size:"+pictures_buf.length);
 
             for(let i=0;i<this.pictures_size.length;i++){
-                console.log("message.js: picture:"+i+",len:"+this.pictures_size[i]);
                 let pic_len = this.pictures_size[i];
                 picture_start = picture_end;
                 picture_end = picture_start + pic_len;
-                console.log("message.js, picture_start:"+picture_start+",picture_end:"+picture_end);
+                console.log("start:"+pic_len+",end:"+picture_end);
                 this.pictures[i] = pictures_buf.slice(picture_start,picture_end);
-                console.log("message.js,picture content:len:"+this.pictures[i].length);
-                console.log(this.pictures[i])
+                console.log(this.pictures[i].length);
             }
         }
 
