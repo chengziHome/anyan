@@ -90,8 +90,11 @@ function initTcp() {
                             if(tmp_slice.init(Buffer.from(dataBuff.slice(dataPos, dataPos + HEADER_LENGTH)))){
                                 console.log("accept a slice,"+tmp_slice.toString());
                             }else{
-                                console.log("accept slice error:"+dataBuff.slice(dataPos, dataPos + HEADER_LENGTH));
-                                console.log("the count is:"+count);
+                                console.log("accept slice error!dataSize:"+dataSize+",dataPos:"+dataPos);
+                                console.log("dataBuff.len:"+dataBuff.length);
+                                console.log("the head buf is:");
+                                console.log(dataBuff.slice(dataPos,dataPos+HEADER_LENGTH));
+
                                 isEnough = false;
                             }
 
@@ -131,6 +134,7 @@ function initTcp() {
                             dataPos += offset;
                             leftSize -= offset;
                             HOME.mPackState = REC_HEADER;
+
                         }
 
                     }
