@@ -86,6 +86,7 @@ function initTcp() {
                             }
                             isEnough = false;
                         } else {
+                            console.log("begin to accept a head");
 
                             if(tmp_slice.init(Buffer.from(dataBuff.slice(dataPos, dataPos + HEADER_LENGTH)))){
                                 console.log("accept a slice,"+tmp_slice.toString());
@@ -115,6 +116,8 @@ function initTcp() {
                             }
                             isEnough = false;
                         } else {
+                            console.log("begin to accept a data");
+
                             var offset = tmp_slice.mSliceLength;
                             tmp_slice.setmData(Buffer.from(dataBuff.slice(dataPos, dataPos + offset)));
                             HOME.mPackSlices.push(tmp_slice);
