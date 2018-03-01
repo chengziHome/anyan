@@ -15,10 +15,6 @@ const REC_DATA = CONST.TCP.REC_DATA;
 const HEADER_LENGTH = CONST.TCP.HEADER_LENGTH;
 const HOME = CONST.HOME;
 
-var mPackState = HOME.mPackState;
-var mRecvBuf = HOME.mRecvBuffer;
-
-
 
 
 const xmlParser = new xml2js.Parser();
@@ -64,10 +60,10 @@ function initTcp() {
             var dataBuff = data;
             var dataSize = data.length;
             //解析slice.
-            if (mRecvBuf != null) {
-                console.log("buf is not null,len is:"+mRecvBuf.length);
-                dataSize += mRecvBuf.length;
-                dataBuff = Buffer.from(Buffer.concat([mRecvBuf, dataBuff]));
+            if (HOME.mRecvBuffer != null) {
+                console.log("buf is not null,len is:"+HOME.mRecvBuffer.length);
+                dataSize += HOME.mRecvBuffer.length;
+                dataBuff = Buffer.from(Buffer.concat([HOME.mRecvBuffer, dataBuff]));
                 console.log("so new buf size is:"+dataBuff.length);
                 HOME.mRecvBuffer = null;
             }
@@ -77,7 +73,7 @@ function initTcp() {
 
             var tmp_slice = new Slice();
             while (isEnough) {
-                switch (mPackState) {
+                switch (HOME.mPackState) {
                     case REC_HEADER: {
                         if (leftSize < HEADER_LENGTH) {
                             console.log("leftSize is not enough for a header,leftSize is:"+leftSize);
@@ -101,7 +97,7 @@ function initTcp() {
 
                             dataPos += HEADER_LENGTH;
                             leftSize -= HEADER_LENGTH;
-                            mPackState = REC_DATA;
+                            HOME.mPackState = REC_DATA;
                         }
 
                     }
@@ -134,7 +130,7 @@ function initTcp() {
 
                             dataPos += offset;
                             leftSize -= offset;
-                            mPackState = REC_HEADER;
+                            HOME.mPackState = REC_HEADER;
                         }
 
                     }
