@@ -83,7 +83,14 @@ function initTcp() {
                             }
                             isEnough = false;
                         } else {
-                            tmp_slice.init(Buffer.from(dataBuff.slice(dataPos, dataPos + HEADER_LENGTH)));
+
+                            if(tmp_slice.init(Buffer.from(dataBuff.slice(dataPos, dataPos + HEADER_LENGTH)))){
+                                console.log("accept a slice,"+tmp_slice.toString());
+                            }else{
+                                console.log("accept slice error:"+dataBuff.slice(dataPos, dataPos + HEADER_LENGTH));
+                                console.log("the count is:"+count);
+                                isEnough = false;
+                            }
 
                             dataPos += HEADER_LENGTH;
                             leftSize -= HEADER_LENGTH;

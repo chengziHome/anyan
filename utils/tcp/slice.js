@@ -33,6 +33,7 @@ class Slice {
             return true;
         }catch(err){
             console.log("Slice 构造出错"+err);
+
             return false;
         }
 

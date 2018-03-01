@@ -4,19 +4,24 @@ var Slice = require('../utils/tcp/slice');
 var fs = require('fs');
 var path = require('path');
 
-HOST = '47.94.181.47';
+
+
+LOCAL_HOST = 'localhost';
+SERVER_HOST = '47.97.181.47';
+
+
 
 var client;
 
 class HomeAlarm {
     /**
-     * 构建一个登录的slice
+     * 构建一个登录的slicet
      */
 
     init(req,res,next){
         console.log("Client begin to init...");
         if(client == null){
-            client = net.createConnection({port:8084,host:HOST,localPort:9000},function(){
+            client = net.createConnection({port:8084,host:SERVER_HOST},function(){
                 console.log("Connection has been created");
                 res.send("InitClient successfully!");
             })
@@ -28,7 +33,7 @@ class HomeAlarm {
 
     alarm(req,res,next) {
 
-        var pic_num = 7;
+        var pic_num = 1;
 
         var imgs = Array(pic_num+1);
         var alarm_xml_pic = '';
