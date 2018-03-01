@@ -15,6 +15,11 @@ const REC_DATA = CONST.TCP.REC_DATA;
 const HEADER_LENGTH = CONST.TCP.HEADER_LENGTH;
 const HOME = CONST.HOME;
 
+var mPackState = HOME.mPackState;
+var mRecvBuf = HOME.mRecvBuffer;
+
+
+
 
 const xmlParser = new xml2js.Parser();
 const xmlBuilder = new xml2js.Builder();
@@ -55,8 +60,6 @@ function initTcp() {
             console.log("Accept data:" + count++ + ",len:" + data.length);
 
 
-            var mPackState = HOME.mPackState;
-            var mRecvBuf = HOME.mRecvBuffer;
 
             var dataBuff = data;
             var dataSize = data.length;
