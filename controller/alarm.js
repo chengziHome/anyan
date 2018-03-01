@@ -85,7 +85,7 @@ function initTcp() {
                             }
                             isEnough = false;
                         } else {
-                            console.log("begin to accept a head");
+                            console.log("begin to accept a head,dataPos:"+dataPos);
 
                             if(tmp_slice.init(Buffer.from(dataBuff.slice(dataPos, dataPos + HEADER_LENGTH)))){
                                 console.log("accept a slice,"+tmp_slice.toString());
@@ -101,6 +101,8 @@ function initTcp() {
                             dataPos += HEADER_LENGTH;
                             leftSize -= HEADER_LENGTH;
                             HOME.mPackState = REC_DATA;
+                            console.log("after accept a head,dataPos:"+dataPos);
+
                         }
 
                     }
@@ -118,7 +120,7 @@ function initTcp() {
                             }
                             isEnough = false;
                         } else {
-                            console.log("begin to accept a data");
+                            console.log("begin to accept a data,dataPos:"+dataPos);
 
                             var offset = tmp_slice.mSliceLength;
                             tmp_slice.setmData(Buffer.from(dataBuff.slice(dataPos, dataPos + offset)));
@@ -134,6 +136,7 @@ function initTcp() {
                             dataPos += offset;
                             leftSize -= offset;
                             HOME.mPackState = REC_HEADER;
+                            console.log("after accept a data,dataPos:"+dataPos);
 
                         }
 
