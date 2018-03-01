@@ -6,7 +6,7 @@ var router = express.Router();
 
 var alarm = new Alarm();
 var homeAlarm = new HomeAlarm();
-var homeUser = new HomeUser()
+var homeUser = new HomeUser();
 
 router.get('/initServer',alarm.init);
 router.get('/initClient',homeAlarm.init);

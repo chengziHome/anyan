@@ -47,10 +47,10 @@ module.exports = AlarmController;
 
 function initTcp() {
     tcpServer = net.createServer();
-    tcpServer.listen(CONST.PORT.TCP_ALARM);
+    tcpServer.listen(CONST.PORT.TCP_ALARM,'0.0.0.0');
     console.log('TCP server is listening at port:' + CONST.PORT.TCP_ALARM);
     tcpServer.on('connection', function (sock) {
-        HOME.alarm_home_tcp = sock
+        HOME.alarm_home_tcp = sock;
         sock.on('data', function (data) {
             console.log("Accept data:" + count++ + ",len:" + data.length);
 
@@ -129,8 +129,8 @@ function initTcp() {
 
 
 function initAlarmWS() {
-    wss = new WebSocket.Server({port: CONST.PORT.WS_ALARM});
-    console.log("WS(8084) is running ...");
+    wss = new WebSocket.Server({port:CONST.PORT.WS_ALARM});
+    console.log("WS(8085) is running ...");
     wss.on('connection', function connection(ws) {
         console.log('accept connection from' + ws.address);
         HOME.alarm_phone_ws.push(ws);

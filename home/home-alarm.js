@@ -4,7 +4,7 @@ var Slice = require('../utils/tcp/slice');
 var fs = require('fs');
 var path = require('path');
 
-HOST = 'localhost';
+HOST = '47.94.181.47';
 
 var client;
 
@@ -14,6 +14,7 @@ class HomeAlarm {
      */
 
     init(req,res,next){
+        console.log("Client begin to init...");
         if(client == null){
             client = net.createConnection({port:8084,host:HOST,localPort:9000},function(){
                 console.log("Connection has been created");
