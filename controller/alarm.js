@@ -64,7 +64,7 @@ function initTcp() {
             if (mRecvBuf != null) {
                 console.log("buf is not null,len is:"+mRecvBuf.length);
                 dataSize += mRecvBuf.length;
-                dataBuff = Buffer.from(mRecvBuf, dataBuff);
+                dataBuff = Buffer.from(Buffer.concat([mRecvBuf, dataBuff]));
                 console.log("so new buf size is:"+dataBuff.length);
                 HOME.mRecvBuffer = null;
             }
@@ -104,7 +104,7 @@ function initTcp() {
                         break;
                     case REC_DATA: {
                         if (leftSize < tmp_slice.mSliceLength) {
-                            console.log("leftSize is not enough for a header,leftSize is:"+leftSize);
+                            console.log("leftSize is not enough for a data,leftSize is:"+leftSize);
 
                             if (leftSize < tmp_slice.mSliceLength) {
                                 console.log("so ,build a buf");
