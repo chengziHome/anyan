@@ -26,6 +26,9 @@ var count = 0;
 
 var log_count = 0;
 
+var tmp_slice = new Slice();
+
+
 
 class AlarmController {
 
@@ -71,7 +74,6 @@ function initTcp() {
             var leftSize = dataSize;
             var isEnough = true;
 
-            var tmp_slice = new Slice();
             while (isEnough) {
                 switch (HOME.mPackState) {
                     case REC_HEADER: {
