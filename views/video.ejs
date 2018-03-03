@@ -15,14 +15,14 @@
         }
     </style>
     <!--<link rel="stylesheet" type="text/css" href="{% static 'lib/css/bootstrap.min.css'  %}">-->
-    <link rel="stylesheet" type="text/css" href="/lib/layui/css/layui.css"  >
+    <link rel="stylesheet" type="text/css" href="/lib/layui/css/layui.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/view-stream.css">
 </head>
 <body>
 <div class="container">
 
     <div class="video">
-        <canvas  id="video-canvas"></canvas>
+        <canvas id="video-canvas"></canvas>
     </div>
 
     <div class="category">
@@ -40,14 +40,18 @@
             <div class="menu-content-1">
                 <h2>设备列表</h2>
                 <div class="equipments">
-                    <form class="equipments-list" action="/play" method="post" onsubmit="return false">
+                    <form class="equipments-list" action="/video/play" method="post" onsubmit="return false">
                         <% for(var i = 0;i < videos.length ;i++) { %>
-                        <label><input type="radio" class="choice" name="video_id" value="<%=videos[i].id%>" /><%=videos[i].name%></label>
+                        <label><input type="radio" class="choice" name="video_id"
+                                      value="<%= videos[i].id %>"/><%= videos[i].name %></label>
                         <% } %>
-                        <label><input class="width" style="display: none;" type="text" name="width" value="" /></label>
-                        <label><input class="height" style="display: none;" type="text" name="height" value="" /></label>
-                        <label><input class="username" style="display: none;" type="text" name="username" value="<%=username%>" /></label>
-                        <label class="switch"><button id="switch" type="button" value="切换设备">切换设备</button></label>
+                        <label><input class="width" style="display: none;" type="text" name="width" value=""/></label>
+                        <label><input class="height" style="display: none;" type="text" name="height" value=""/></label>
+                        <label><input class="username" style="display: none;" type="text" name="username"
+                                      value="<%= username %>"/></label>
+                        <label class="switch">
+                            <button id="switch" type="button" value="切换设备">切换设备</button>
+                        </label>
                     </form>
                 </div>
             </div>
@@ -58,12 +62,12 @@
                         <% for(var i = 0;i < alarms.length;i++){ %>
                         <li>
                             <div class="alarm-img ">
-                                <img class="img img-min" src="<%=alarms[i].img%>"/>
+                                <img class="img img-min" src="<%= alarms[i].img %>"/>
                             </div>
                             <div class="message">
-                                <div class="time"><%=alarms[i].time%></div>
-                                <div class="type"><%=alarms[i].type%></div>
-                                <div class="equipment"><%=alarms[i].ip%></div>
+                                <div class="time"><%= alarms[i].time %></div>
+                                <div class="type"><%= alarms[i].type %></div>
+                                <div class="equipment"><%= alarms[i].ip %></div>
                             </div>
                         </li>
                         <% } %>
@@ -82,41 +86,30 @@
 
 <script src="/javascripts/jquery.min.js"></script>
 <!--<script src="{% static 'lib/js/bootstrap.min.js'  %}"></script>-->
-<script type="text/javascript" src="/lib/layui/layui.all.js" ></script>
+<script type="text/javascript" src="/lib/layui/layui.all.js"></script>
 <script type="text/javascript" src="/javascripts/jsmpeg-1.1.min.js"></script>
 <script type="text/javascript">
 
 
     var current_player = null;
-    var current_id = '<%=video_id%>';
-    var uuid = '<%=uuid%>';
-    var username = '<%=username%>';
+    var current_id = '<%= video_id %>';
+    var uuid = '<%= uuid %>';
+    var username = '<%= username %>';
     var canvas = document.getElementById('video-canvas');
     var width = window.innerWidth;
     var height = window.innerHeight;
     canvas.width = width;
     canvas.height = width / 1.78;
 
-    if(current_id!='-1'){
-        createPlayer(current_id,uuid,username);
+    if (current_id != '-1') {
+        createPlayer(current_id, uuid, username);
     }
 
 
-    function createPlayer(video_id,uuid,username){
-        var url = 'ws://'+document.location.hostname+'8082';
-        var player = new JSMpeg.Player(url, {canvas: canvas});
+    function createPlayer(video_id, uuid, username) {
+        var url = 'ws://' + document.location.hostname + ':8083';
+        var player = new JSMpeg.Player(url, {canvas: canvas,uuid:uuid});
         current_player = player;
-
-        var ws_socket = null;
-        var socket = null;
-        while((ws_socket=player.getWSSocket())==null);
-        while((socket=ws_socket.getSocket())==null);
-
-
-        socket.send(JSON.stringify({
-            type:"PHONE",uuid:uuid
-        }))
-
     }
 
     //切换视频的逻辑
@@ -126,30 +119,30 @@
         //检查是否同一视频
         var item = $(":radio:checked");
         var new_id = item.val();
-        console.log('new_id:'+new_id+',current_id:'+current_id);
+        console.log('new_id:' + new_id + ',current_id:' + current_id);
 
-        if (new_id==current_id){
+        if (new_id == current_id) {
             return;
-        }else{
+        } else {
             //开始切换。切换成功后更新current_id
             //1,请求 http:post /play
             console.log('begin post');
             $.post(
-                '/play',
+                '/video/play',
                 {
-                    username:username,
-                    video_id:new_id,
-                    width:width,
-                    height:Math.floor(width/1.78),
+                    username: username,
+                    video_id: new_id,
+                    width: width,
+                    height: Math.floor(width / 1.78),
                 },
                 function (data) {
                     console.log('post success');
-                    if(data.ret_code==0){
-                        if(current_player!=null)
+                    if (data.ret_code == 0) {
+                        if (current_player != null)
                             current_player.destroy();
-                        createPlayer(new_id,data.uuid,data.username);
-                    }else{
-                        console.log('error:'+data.err_msg);
+                        createPlayer(new_id, data.uuid, data.username);
+                    } else {
+                        console.log('error:' + data.err_msg);
                     }
                 }
             )
@@ -159,21 +152,15 @@
     });
 
 
-
-
-
-
-
-
     // 设置画布的响应大小，原视频尺寸是：1920 x 1080 (1.78)
 
     $('.width').val(width);
-    $('.height').val(Math.floor(width/1.78));
+    $('.height').val(Math.floor(width / 1.78));
 
 
     //顺便帮css把category定一下位。
-    $('.video').height(width/1.76);
-    $('.category').height(height - width/1.76);
+    $('.video').height(width / 1.76);
+    $('.category').height(height - width / 1.76);
 
     //关于页面的一些动作
     $('.menu-content-2').show();
@@ -189,53 +176,53 @@
 
     //关于图像的动作
 
-    layui.define(['layer', 'form'], function(exports){
+    layui.define(['layer', 'form'], function (exports) {
         var layer = layui.layer
-            ,form = layui.form;
+            , form = layui.form;
         exports('index', {}); //注意，这里是模块输出的核心，模块名必须和use时的模块名一致
     });
 
-    $('.img').click(function () {
-        var img = new Image();
-        var src = $(this).attr('src');
-        console.log(src);
-        var imgHtml = '<img style="width:320px;height: 180px;" src=" '+ src +' "   />';
-        layer.open({
-            type: 1,
-            shade: false,
-            title: false, //不显示标题
-            area:['320px','180px'],
-            // area: [img.width + 'px', img.height+'px'],
-            content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
-            cancel: function(index, layero){
-                layer.close(index)
-                return true;
-            },
-
-
-        });
-    });
-
+    // $('.img').click(function () {
+    //     var img = new Image();
+    //     var src = $(this).attr('src');
+    //     console.log(src);
+    //     var imgHtml = '<img style="width:320px;height: 180px;" src=" '+ src +' "   />';
+    //     layer.open({
+    //         type: 1,
+    //         shade: false,
+    //         title: false, //不显示标题
+    //         area:['320px','180px'],
+    //         // area: [img.width + 'px', img.height+'px'],
+    //         content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+    //         cancel: function(index, layero){
+    //             layer.close(index)
+    //             return true;
+    //         },
+    //
+    //
+    //     });
+    // });
 
 
     var ws = new WebSocket('ws://' + document.location.hostname + ':8085');
-    var alarms = {ip:'0', type:'0', time:'0', img:'0'};
+    var alarms = {ip: '0', type: '0', time: '0', img: '0'};
+
     function updataUI() {
 
         // WebSocket message handler
         ws.onmessage = function (e) {
             var alarmData = JSON.parse(e.data);
-            console.log("data:"+e.data);
+            console.log("data:" + e.data);
             var new_li = '<li>\n' +
                 '                            <div class="alarm-img ">\n' +
-                '                                <img class="img img-min" src="'+ alarmData['imgs'][0] +'"/>\n' +
+                '                                <img class="img img-min" src="' + alarmData['imgs'][0] + '"/>\n' +
                 '\n' +
                 '\n' +
                 '                            </div>\n' +
                 '                            <div class="message">\n' +
-                '                                <div class="time">'+ alarmData['time'] +'</div>\n' +
-                '                                <div class="type">'+ alarmData['type'] +'</div>\n' +
-                '                                <div class="equipment">'+ alarmData['channel'] +'</div>\n' +
+                '                                <div class="time">' + alarmData['time'] + '</div>\n' +
+                '                                <div class="type">' + alarmData['type'] + '</div>\n' +
+                '                                <div class="equipment">' + alarmData['channel'] + '</div>\n' +
                 '                            </div>\n' +
                 '                        </li>';
 
@@ -243,12 +230,12 @@
 
             //先构造内部轮播div
             var imgs = '';
-            for(let i=0;i<alarmData['imgs'].length;i++){
-                imgs += ' <div><img class="img img-min" src="'+ alarmData['imgs'][i] +'"></div>';
+            for (let i = 0; i < alarmData['imgs'].length; i++) {
+                imgs += ' <div><img class="img img-min" src="' + alarmData['imgs'][i] + '"></div>';
             }
-            var carousel ='<div class="layui-carousel">' +
+            var carousel = '<div class="layui-carousel " style="margin:auto;padding-top: 10px" >' +
                 '    <div carousel-item="">' +
-                        imgs +
+                imgs +
                 '    </div>' +
                 '           </div>';
 
@@ -262,7 +249,7 @@
                     type: 1,
                     shade: false,
                     title: false, //不显示标题
-                    area: ['320px', '180px'],
+                    area: ['300px', '200px'],
                     content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
                     cancel: function (index, layero) {
                         layer.close(index)
@@ -272,29 +259,29 @@
 
 
                 //打开之后绑定轮播图
-                layui.use(['carousel', 'form'], function(){
+                layui.use(['carousel', 'form'], function () {
                     var carousel = layui.carousel
-                        ,form = layui.form;
+                        , form = layui.form;
 
 
                     //图片轮播
                     carousel.render({
                         elem: '.layui-carousel'
-                        ,width: '320px'
-                        ,height: '180px'
-                        ,interval: 10000
+                        , width: '220px'
+                        , height: '180px'
+                        , interval: 10000
                     });
 
                     //事件
-                    carousel.on('change(test4)', function(res){
+                    carousel.on('change(test4)', function (res) {
                         console.log(res)
                     });
 
                     var $ = layui.$, active = {
-                        set: function(othis){
+                        set: function (othis) {
                             var THIS = 'layui-bg-normal'
-                                ,key = othis.data('key')
-                                ,options = {};
+                                , key = othis.data('key')
+                                , options = {};
 
                             othis.css('background-color', '#5FB878').siblings().removeAttr('style');
                             options[key] = othis.data('value');
@@ -303,23 +290,23 @@
                     };
 
                     //监听开关
-                    form.on('switch(autoplay)', function(){
+                    form.on('switch(autoplay)', function () {
                         ins3.reload({
                             autoplay: this.checked
                         });
                     });
 
-                    $('.demoSet').on('keyup', function(){
+                    $('.demoSet').on('keyup', function () {
                         var value = this.value
-                            ,options = {};
-                        if(!/^\d+$/.test(value)) return;
+                            , options = {};
+                        if (!/^\d+$/.test(value)) return;
 
                         options[this.name] = value;
                         ins3.reload(options);
                     });
 
                     //其它示例
-                    $('.demoTest .layui-btn').on('click', function(){
+                    $('.demoTest .layui-btn').on('click', function () {
                         var othis = $(this), type = othis.data('type');
                         active[type] ? active[type].call(this, othis) : '';
                     });
@@ -337,14 +324,14 @@
     function check() {
         var item = $(":radio:checked");
         var new_id = item.val();
-        console.log('new_id:'+new_id+',current_id:'+current_id);
+        console.log('new_id:' + new_id + ',current_id:' + current_id);
 
-        if (new_id!=current_id){
+        if (new_id != current_id) {
             current_id = new_id;
-            console.log('true:new_id:'+new_id+',current_id:'+current_id);
+            console.log('true:new_id:' + new_id + ',current_id:' + current_id);
             return true;
-        }else{
-            console.log('false:new_id:'+new_id+',current_id:'+current_id);
+        } else {
+            console.log('false:new_id:' + new_id + ',current_id:' + current_id);
             return false;
         }
         return false;

@@ -3,7 +3,6 @@ var request = require('request');
 var util = require('util');
 var Home = require('../utils/user/home');
 
-const HOME = CONST.HOME
 
 
 class User {
@@ -25,13 +24,15 @@ class User {
         var videosList = req.body.videosList;
         console.log("type:" + type + ",username:" + username + ",password:" + password + ",videlList:\n" + videosList);
 
+
         if (type == CONST.LOGIN.HOME) {
-            HOME.username = username;
-            HOME.videosList = videosList;
+
+            CONST.HOME.username = username;
+            CONST.HOME.videosList = JSON.parse(videosList);
             res.send('{"ret_code":0,"err_msg":""}')
         } else {
             res.render('video', {
-                videos: HOME.videosList, alarms: HOME.alarmsList,
+                videos: CONST.HOME.videosList, alarms: CONST.HOME.alarmsList,
                 video_id: '-1', username: username, uuid: -1
             })
         }

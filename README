@@ -1,0 +1,5 @@
+对于JSMpeg的修改
+在player里面的options里面加上了参数uuid,将业务绑定在了库里面
+
+
+

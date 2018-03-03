@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var users = require('./routes/users');
 var debug = require('./routes/debug');
 var alarm = require('./routes/alarm');
-
+var video = require('./routes/video');
 
 var app = express();
 
@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', users);
 app.use('/debug',debug);
 app.use('/alarm',alarm);
-
+app.use('/video',video);
 
 
 

@@ -69,7 +69,8 @@ class Home{
 
 
         for (let k = 0; k < pictures.length; k++) {
-            var img_url = '/tmp/' + msg.mSn + '-' + k + '.jpg';
+            var alarm_sn = msg.mSn%3;
+            var img_url = '/tmp/' + alarm_sn + '-' + k + '.jpg';
             fs.writeFileSync(path.join(__dirname,'../../public' + img_url), pictures_data[k], function (err) {
                 if (err) {
                     console.log(err.message);
@@ -87,7 +88,13 @@ class Home{
         var alarm = {};
         alarm.time = msg_xml.Notify.Alarming[0].$.stamp;
         alarm.type = ALARM_TYPE[parseInt(msg_xml.Notify.Alarming[0].$.type)];
-        alarm.channel = this.videosList[parseInt(msg_xml.Notify.Alarming[0].$.channelID)];
+
+
+        var video_id = parseInt(msg_xml.Notify.Alarming[0].$.channelID);
+        var video_name = this.videosList[video_id].name;
+
+
+        alarm.channel = video_name;
         alarm.imgs = msg_xml.Notify.Alarming[0].imgs;
         console.log(alarm);
 

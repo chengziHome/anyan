@@ -1,9 +1,18 @@
 const CONST = require('../utils/const');
 const uuid = require('node-uuid');
-const CONST = require('../utils/const');
+var WebSocket = require('ws');
+var VideoStreamPair = require('../utils/user/video-stream-pair');
 
+
+var videoCtrlServer = null;
+var videoStreamHome = null;
+var videoStreamPhone = null;
 
 class Video {
+
+    constructor(){
+
+    }
 
     async play(req, res, next) {
         var username = req.body.username;
@@ -12,16 +21,16 @@ class Video {
         var height = req.body.height;
         console.log("username:" + username + ",video_id:" + video_id + ",width:" + width + ",height:" + height);
 
-        var pair = new VideoStream();
+        var pair = new VideoStreamPair();
         pair.uuid = uuid.v1();
         pair.username = username;
         pair.width = width;
         pair.height = height;
         pair.video_id = parseInt(video_id);
-        HOME.video_pair_list.push(pair);
+        CONST.HOME.video_pair_list.push(pair);
 
 
-        video_ctrl_ws.send(JSON.stringify({
+        CONST.HOME.video_ctrl_ws.send(JSON.stringify({
                 video_id: parseInt(video_id),
                 uuid: pair.uuid,
                 width: pair.width,
@@ -36,11 +45,17 @@ class Video {
 
 
     initWS(req, res, next) {
-        /* init the ws server and tcp server */
-        console.log("intilizing WS Server");
-        initVideoCtrlWS();
-        initVideoStreamWS();
-        res.send("init ok");
+        /*　 init the ws server and tcp server */
+        if(videoCtrlServer==null){
+            initCtrlWS();
+        }
+        if(videoStreamHome==null){
+            initStreamWSHome()
+        }
+        if(videoStreamPhone==null){
+            initStreamWSPhone();
+        }
+        res.send("init Video WS server ok!");
     }
 
 
@@ -56,11 +71,11 @@ class Video {
  * video ctrl WS Server ,port:8081
  * this server will not accept something,but send the video_id
  */
-function initWSCtrl() {
-    var wss = new WebSocket.Server({port: CONST.PORT.WS_CTRL_HOME});
+function initCtrlWS() {
+    videoCtrlServer = new WebSocket.Server({port: CONST.PORT.WS_CTRL_HOME});
     console.log("WS(8081) is running ...")
-    wss.on('connection', function connection(ws) {
-        console.log('accept connection from' + ws.address);
+    videoCtrlServer.on('connection', function connection(ws) {
+        console.log('accept connection from home(ctrl):');
         CONST.HOME.video_ctrl_ws = ws;
         ws.on('message', function incoming(data) {
             var jsonData = JSON.parse(data);
@@ -76,25 +91,24 @@ function initWSCtrl() {
  * two:accept the video stream.
  */
 
-function initWsStreamHome() {
-    var count = 0;
-    var wss = new WebSocket.Server({port: CONST.PORT.WS_STREAM_HOME});
+function initStreamWSHome() {
+    videoStreamHome = new WebSocket.Server({port: CONST.PORT.WS_STREAM_HOME});
     console.log("WS(8082) is running ...")
 
-    wss.on('connection', function connection(ws) {
-        console.log('accept connection from' + ws.address);
+    videoStreamHome.on('connection', function connection(ws) {
+        console.log('accept connection from home:');
         ws.on('message', function incoming(data) {
-            // 1,Is the websocket is a ts stream ws connection
             var pair = null;
-            if ((pair = getPairByHome(ws)) != null) {
-                if (pair.phone_ws != null) {
+            if ((pair = getPairByHome(ws)) != null) {//ts　stream
+                if (pair.phone_ws != null) {//用户已经就绪
                     pair.phone_ws.send(data);
 
+                }else{//用户已经关闭链接
+                    console.log("there is no phone ws");
                 }
-            } else {
-                // 2,It is a message connection
-                console.log("receive data from phone:" + data);
-                jsonData = JSON.parse(data);
+            } else {//初次链接
+                console.log("receive data from home:" + data);
+                var jsonData = JSON.parse(data);
 
                 var stream_pair = getPairByUUID(jsonData.uuid);
                 if (stream_pair != null) {
@@ -120,13 +134,15 @@ function initWsStreamHome() {
  * video stream phone WS Server,port:8083
  *
  */
-function initWsStreamPhone() {
-    var wss = new WebSocket.Server({port: CONST.PORT.WS_STREAM_PHONE});
+function initStreamWSPhone() {
+    videoStreamPhone = new WebSocket.Server({port: CONST.PORT.WS_STREAM_PHONE});
     console.log("WS(8083) is running ...")
 
-    wss.on('connection', function connection(ws) {
-        console.log('accept connection from' + ws.address);
+    videoStreamPhone.on('connection', function connection(ws) {
+        console.log('accept connection from phone:');
         ws.on('message', function incoming(data) {
+            console.log("receive data from home:" + data);
+
             //only accept a message once
             var jsonData = JSON.parse(data);
 
@@ -144,16 +160,12 @@ function initWsStreamPhone() {
                 ws.send(JSON.stringify({
                     ret_code: -2,
                     err_msg: "Can't find the pair"
-                }))
+                }));
             }
-
-
         });
         ws.on('close', function close() {
-            if (stream_pair.home_ws != null) {
-                stream_pair.home_ws.close();
-            }
-            removePair(stream_pair);
+            //立即关闭home的socket链接．
+            removePairByPhone(ws);
         })
     });
 }
@@ -172,9 +184,9 @@ function getPairByHome(ws){
 }
 
 
-function getPairByHome(ws){
+function getPairByUUID(uuid){
     for(let i=0;i<CONST.HOME.video_pair_list.length;i++){
-        if(CONST.HOME.video_pair_list[i].home_ws==ws){
+        if(CONST.HOME.video_pair_list[i].uuid==uuid){
             return CONST.HOME.video_pair_list[i];
         }
     }
@@ -182,4 +194,36 @@ function getPairByHome(ws){
 }
 
 
+function removePairByHome(){
+    for(let i=0;i<CONST.HOME.video_pair_list.length;i++){
+        if(CONST.HOME.video_pair_list[i].home_ws==ws){
+            CONST.HOME.video_pair_list.splice(i,1);
+            break;
+        }
+    }
+}
 
+
+function removePhoneByPhone(ws){
+    for(let i=0;i<CONST.HOME.video_pair_list.length;i++){
+        if(CONST.HOME.video_pair_list[i].phone_ws==ws){
+            CONST.HOME.video_pair_list.phone_ws=null;
+            break;
+        }
+    }
+}
+
+function removePairByPhone(ws){
+    for(let i=0;i<CONST.HOME.video_pair_list.length;i++){
+        if(CONST.HOME.video_pair_list[i].phone_ws==ws){
+            if(CONST.HOME.video_pair_list[i].home_ws!=null){
+                CONST.HOME.video_pair_list[i].home_ws.close();
+            }
+            CONST.HOME.video_pair_list.splice(i,1);
+            break;
+        }
+    }
+}
+
+
+module.exports = Video;
