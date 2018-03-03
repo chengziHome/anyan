@@ -218,6 +218,7 @@ function removePairByPhone(ws){
     var tmp_home = null;
     for(let i=0;i<CONST.HOME.video_pair_list.length;i++){
         if(CONST.HOME.video_pair_list[i].phone_ws==ws){
+            CONST.HOME.video_pair_list[i].phone_ws=null;
             if(CONST.HOME.video_pair_list[i].home_ws!=null){
                 CONST.HOME.video_pair_list[i].home_ws.close();
                 tmp_home = CONST.HOME.video_pair_list[i].home_ws;
