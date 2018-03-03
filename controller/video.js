@@ -165,6 +165,7 @@ function initStreamWSPhone() {
         });
         ws.on('close', function close() {
             //立即关闭home的socket链接．
+            console.log("8083 close the home ws");
             removePairByPhone(ws);
         })
     });
@@ -218,6 +219,7 @@ function removePairByPhone(ws){
         if(CONST.HOME.video_pair_list[i].phone_ws==ws){
             if(CONST.HOME.video_pair_list[i].home_ws!=null){
                 CONST.HOME.video_pair_list[i].home_ws.close();
+                console.log("8083 close successfully")
             }
             CONST.HOME.video_pair_list.splice(i,1);
             break;
