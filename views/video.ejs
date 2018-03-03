@@ -114,12 +114,10 @@
 
     //切换视频的逻辑
     $('#switch').click(function () {
-        console.log("未同步刷新");
 
         //检查是否同一视频
         var item = $(":radio:checked");
         var new_id = item.val();
-        console.log('new_id:' + new_id + ',current_id:' + current_id);
 
         if (new_id == current_id) {
             return;

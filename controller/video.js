@@ -101,7 +101,11 @@ function initStreamWSHome() {
             var pair = null;
             if ((pair = getPairByHome(ws)) != null) {//ts　stream
                 if (pair.phone_ws != null) {//用户已经就绪
-                    pair.phone_ws.send(data);
+                    try{
+                        pair.phone_ws.send(data);
+                    }catch(err){
+                        console.log("8082 transmit error:data.len:"+data.length+",err_msg:"+err.message);
+                    }
 
                 }else{//用户已经关闭链接
                     console.log("there is no phone ws");
@@ -195,7 +199,7 @@ function getPairByUUID(uuid){
 }
 
 
-function removePairByHome(){
+function removePairByHome(ws){
     for(let i=0;i<CONST.HOME.video_pair_list.length;i++){
         if(CONST.HOME.video_pair_list[i].home_ws==ws){
             CONST.HOME.video_pair_list.splice(i,1);
