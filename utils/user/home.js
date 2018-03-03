@@ -70,7 +70,7 @@ class Home{
 
 
         for (let k = 0; k < pictures.length; k++) {
-            var alarm_sn = msg.mSn%3;
+            var alarm_sn = msg.mSn%1000;
             var img_url = '/tmp/' + alarm_sn + '-' + k + '.jpg';
             fs.writeFileSync(path.join(__dirname,'../../public' + img_url), pictures_data[k], function (err) {
                 if (err) {
