@@ -52,7 +52,7 @@ module.exports = AlarmController;
 function initTcp() {
     tcpServer = net.createServer();
     tcpServer.listen(CONST.PORT.TCP_ALARM,'0.0.0.0');
-    console.log('TCP server is listening at port:' + CONST.PORT.TCP_ALARM);
+    console.log('TCP(8084) is running...');
     tcpServer.on('connection', function (sock) {
         console.log("Accept connection from "+sock.address());
         HOME.alarm_home_tcp = sock;

@@ -33,6 +33,7 @@ class Home{
         return JSON.stringify({
             username:this.username,
             videos:this.videosList.length,
+            video_pair_len:this.video_pair_list.length,
             alarm_home_tcp_null:this.alarm_home_tcp==null,
             alarm_phone_ws:this.alarm_phone_ws.length
         })

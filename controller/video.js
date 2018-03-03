@@ -75,7 +75,7 @@ function initCtrlWS() {
     videoCtrlServer = new WebSocket.Server({port: CONST.PORT.WS_CTRL_HOME});
     console.log("WS(8081) is running ...")
     videoCtrlServer.on('connection', function connection(ws) {
-        console.log('accept connection from home(ctrl):');
+        console.log('8081 accept connection from home(ctrl):');
         CONST.HOME.video_ctrl_ws = ws;
         ws.on('message', function incoming(data) {
             var jsonData = JSON.parse(data);
@@ -96,7 +96,7 @@ function initStreamWSHome() {
     console.log("WS(8082) is running ...")
 
     videoStreamHome.on('connection', function connection(ws) {
-        console.log('accept connection from home:');
+        console.log('8082 accept connection from home:');
         ws.on('message', function incoming(data) {
             var pair = null;
             if ((pair = getPairByHome(ws)) != null) {//ts　stream
@@ -107,7 +107,7 @@ function initStreamWSHome() {
                     console.log("there is no phone ws");
                 }
             } else {//初次链接
-                console.log("receive data from home:" + data);
+                console.log("8082 first receive data from home:" + data);
                 var jsonData = JSON.parse(data);
 
                 var stream_pair = getPairByUUID(jsonData.uuid);
@@ -139,9 +139,9 @@ function initStreamWSPhone() {
     console.log("WS(8083) is running ...")
 
     videoStreamPhone.on('connection', function connection(ws) {
-        console.log('accept connection from phone:');
+        console.log('8083 accept connection from phone:');
         ws.on('message', function incoming(data) {
-            console.log("receive data from home:" + data);
+            console.log("8083 receive data from phone:" + data);
 
             //only accept a message once
             var jsonData = JSON.parse(data);
