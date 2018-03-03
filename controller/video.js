@@ -36,7 +36,7 @@ class Video {
                 width: pair.width,
                 height: pair.height
             }), function () {
-                console.log("send already");
+                console.log("send already,uuid");
                 res.send({ret_code: 0, err_msg: "ok", uuid: pair.uuid});
             }
         );
@@ -215,13 +215,19 @@ function removePhoneByPhone(ws){
 }
 
 function removePairByPhone(ws){
+    var tmp_home = null;
     for(let i=0;i<CONST.HOME.video_pair_list.length;i++){
         if(CONST.HOME.video_pair_list[i].phone_ws==ws){
             if(CONST.HOME.video_pair_list[i].home_ws!=null){
                 CONST.HOME.video_pair_list[i].home_ws.close();
+                tmp_home = CONST.HOME.video_pair_list[i].home_ws;
                 console.log("8083 close successfully")
             }
-            CONST.HOME.video_pair_list.splice(i,1);
+
+            //上一个链接的数据可能在网络中有残留，所以要延迟删除这个pair
+            setTimeout(function(){
+                removePairByHome(tmp_home);
+            },60000);
             break;
         }
     }

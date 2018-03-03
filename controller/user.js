@@ -22,7 +22,7 @@ class User {
         var username = req.body.username;
         var password = req.body.password;
         var videosList = req.body.videosList;
-        console.log("type:" + type + ",username:" + username + ",password:" + password + ",videlList:\n" + videosList);
+        console.log("type:" + type + ",username:" + username + ",password:" + password + ",videlList:" + videosList.length);
 
 
         if (type == CONST.LOGIN.HOME) {
