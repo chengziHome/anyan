@@ -22,13 +22,14 @@ class User {
         var username = req.body.username;
         var password = req.body.password;
         var videosList = req.body.videosList;
-        console.log("type:" + type + ",username:" + username + ",password:" + password + ",videlList:" + videosList.length);
 
 
         if (type == CONST.LOGIN.HOME) {
 
             CONST.HOME.username = username;
             CONST.HOME.videosList = JSON.parse(videosList);
+            console.log("type:" + type + ",username:" + username + ",password:" + password + ",videlList:" + CONST.HOME.videosList.length);
+
             res.send('{"ret_code":0,"err_msg":""}')
         } else {
             res.render('video', {
