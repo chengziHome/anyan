@@ -54,11 +54,24 @@ function initTcp() {
     tcpServer.listen(CONST.PORT.TCP_ALARM,'0.0.0.0');
     console.log('TCP server is listening at port:' + CONST.PORT.TCP_ALARM);
     tcpServer.on('connection', function (sock) {
+        console.log("Accept connection from "+sock.address());
         HOME.alarm_home_tcp = sock;
+
+        //send Subscribe message
+        var subscribe = new Slice();
+        subscribe.setmVer(0x01);
+        subscribe.setmSn(1);
+        subscribe.setmSliceCount(1);
+        subscribe.setmSliceSn(0);
+        subscribe.setmSliceLength(CONST.TCP.SUBSCRIBE.length);
+        subscribe.setmLength(CONST.TCP.SUBSCRIBE.length);
+        subscribe.setmMsgLength(CONST.TCP.SUBSCRIBE.length);
+        subscribe.setmData(Buffer.from(CONST.TCP.SUBSCRIBE));
+
+        sock.write(subscribe.getBuffer());
+
         sock.on('data', function (data) {
             console.log("Accept data:" + count++ + ",len:" + data.length);
-
-
 
             var dataBuff = data;
             var dataSize = data.length;

@@ -15,6 +15,7 @@ class Home{
         this.video_stream_ws = [];// Deprecated.See VideoStreamPair.
         this.alarm_home_tcp = null;//a tcp socket object reference
         this.alarm_phone_ws = [];
+        this.video_pair_list = [];
 
         //alarm message
 
@@ -52,8 +53,8 @@ class Home{
         var msg_xml = msg.getXml();
 
         //过滤重复登录信息
-        if (msg_xml.Notify.$.Type == "Login"){
-            console.log("重复登录");
+        if (msg_xml.Notify.$.Type == "DrawBoundMessage"){
+            console.log("AlarmBox ");
             return;
         }
 

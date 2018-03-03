@@ -21,9 +21,12 @@ class HomeAlarm {
     init(req,res,next){
         console.log("Client begin to init...");
         if(client == null){
-            client = net.createConnection({port:8084,host:SERVER_HOST},function(){
+            client = net.createConnection({port:8084,host:LOCAL_HOST},function(){
                 console.log("Connection has been created");
                 res.send("InitClient successfully!");
+            })
+            client.on("data",function(data){
+                console.log("accept data:"+data);
             })
         }else{
             res.send("The Client has been initilized!");
@@ -33,7 +36,7 @@ class HomeAlarm {
 
     alarm(req,res,next) {
 
-        var pic_num = 1;
+        var pic_num = 5;
 
         var imgs = Array(pic_num+1);
         var alarm_xml_pic = '';

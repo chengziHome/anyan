@@ -32,10 +32,10 @@ class Message{
 
         var slices_buf = [];
         console.log("Msg accept slices:total:"+this.slices.length);
-        var log_count = 10;
-        for(let i=0;i<log_count;i++){
-            console.log(this.slices[i].getBuffer());
-        }
+        // var log_count = 0;
+        // for(let i=0;i<log_count;i++){
+        //     console.log(this.slices[i].getBuffer());
+        // }
 
 
         for(var i=0;i<this.slices.length;i++){

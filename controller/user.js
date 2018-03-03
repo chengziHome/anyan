@@ -28,7 +28,6 @@ class User {
         if (type == CONST.LOGIN.HOME) {
             HOME.username = username;
             HOME.videosList = videosList;
-
             res.send('{"ret_code":0,"err_msg":""}')
         } else {
             res.render('video', {
@@ -38,6 +37,7 @@ class User {
         }
 
 
+        //         cancel the login module
 
 
         //
@@ -49,7 +49,6 @@ class User {
         //
         //
         //
-        //         cancel the login module
         //
         //         if(body=='success'){
         //             // 初始化home对象

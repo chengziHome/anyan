@@ -11,13 +11,15 @@ const TCP = {
 
     REC_HEADER:1,
     REC_DATA:2,
+    SUBSCRIBE:"<Subscribe Type=\"Alarming\"><ChannelId/></Subscribe>"
 
 }
 
 const PORT = {
     WEB:80,
-    WS_CTRL:8081,
-    WS_STREAM:8082,
+    WS_CTRL_HOME:8081,
+    WS_STREAM_HOME:8082,
+    WS_STREAM_PHONE:8083,
     TCP_ALARM:8084,
     WS_ALARM:8085
 }
