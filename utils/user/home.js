@@ -92,7 +92,7 @@ class Home{
 
 
         var video_id = parseInt(msg_xml.Notify.Alarming[0].$.channelID);
-        var video_name = this.videosList[video_id].name;
+        var video_name = this.videosList[video_id-1].name;
 
 
         alarm.channel = video_name;
